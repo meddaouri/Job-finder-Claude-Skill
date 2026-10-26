@@ -1,0 +1,77 @@
+<!-- Job Finder — results cards. Copy this file, fill only DATA (translate labels), render inline or as an HTML artifact. Supports RTL/LTR, dark mode and reduced motion. -->
+<style>
+:root{--jf-brand:#4F46E5;--jf-brand-2:#0EA5E9;--jf-dark:#1E2330;--jf-bg:#fff;--jf-soft:#F3F4F8;--jf-line:#E2E4EC;--jf-muted:#5B6172;--jf-ok-bg:#E6F4EA;--jf-ok:#1E7B3A;--jf-mid-bg:#ECEBFD;--jf-warn-bg:#FDF3DC;--jf-warn:#8A5A00}
+@media (prefers-color-scheme:dark){:root{--jf-dark:#ECEEF4;--jf-bg:#1A1D26;--jf-soft:#242833;--jf-line:#343846;--jf-muted:#A4AABA;--jf-ok-bg:#163A22;--jf-ok:#8FD7A6;--jf-mid-bg:#25235A;--jf-brand:#8B85FF;--jf-warn-bg:#3D2E0C;--jf-warn:#F3C76B}}
+.jfr{font-family:system-ui,-apple-system,"Segoe UI",Tahoma,"Noto Sans",sans-serif;color:var(--jf-dark);padding:12px 0;font-size:14px;max-width:720px;margin:0 auto;line-height:1.45}
+.jfr *{box-sizing:border-box}
+.jfr .m{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.jfr .mc{background:var(--jf-soft);border-radius:10px;padding:10px 12px}.jfr .mc p{margin:0}
+.jfr .l{font-size:12px;color:var(--jf-muted)}.jfr .v{font-size:22px;font-weight:700}
+.jfr .chips{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.jfr .chip{font:inherit;font-size:13px;padding:4px 12px;border-radius:999px;border:1px solid var(--jf-line);cursor:pointer;background:var(--jf-bg);color:var(--jf-dark)}
+.jfr .chip.on{background:var(--jf-mid-bg);color:var(--jf-brand);border-color:var(--jf-brand)}
+.jfr .chip:focus-visible,.jfr .btn:focus-visible,.jfr .lk:focus-visible{outline:2px solid var(--jf-brand);outline-offset:2px}
+.jfr .sec{font-size:13px;font-weight:600;color:var(--jf-muted);margin:18px 0 8px}
+.jfr .card{background:var(--jf-bg);border:1px solid var(--jf-line);border-radius:14px;padding:14px 16px;margin-bottom:10px}
+.jfr .card.top{border:2px solid var(--jf-brand)}
+.jfr .hd{display:flex;gap:12px;align-items:flex-start}
+.jfr .sc{min-width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex:none}
+.jfr .tt{font-weight:650;font-size:15px;margin:0;overflow-wrap:anywhere}.jfr .em{font-size:13px;color:var(--jf-muted);margin:2px 0 0}
+.jfr .tags{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.jfr .tag{font-size:12px;padding:3px 9px;border-radius:6px;background:var(--jf-soft);color:var(--jf-muted)}
+.jfr .tag.warn{background:var(--jf-warn-bg);color:var(--jf-warn);font-weight:600}
+.jfr .bar{height:6px;border-radius:3px;background:var(--jf-soft);margin:8px 0 10px;overflow:hidden}.jfr .bar span{display:block;height:100%;background:linear-gradient(90deg,var(--jf-brand),var(--jf-brand-2))}
+.jfr .why,.jfr .gap{font-size:13px;margin:4px 0}.jfr .gap{color:var(--jf-warn)}
+.jfr .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.jfr .btn{font:inherit;font-size:13px;padding:7px 12px;border-radius:9px;border:1px solid var(--jf-line);background:transparent;color:var(--jf-dark);cursor:pointer;text-decoration:none}
+.jfr .btn.pri{background:var(--jf-brand);border-color:var(--jf-brand);color:#fff}
+.jfr .links{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:18px}
+.jfr .lk{position:relative;overflow:hidden;display:flex;align-items:center;gap:10px;padding:14px;border-radius:16px;text-decoration:none;color:#fff;font-size:13px;line-height:1.5;background:var(--c1);animation:jfHue 4s ease-in-out infinite;transition:transform .15s}
+.jfr .lk:hover{transform:translateY(-2px) scale(1.02)}
+.jfr .lk::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);animation:jfShine 2.6s ease-in-out infinite}
+.jfr .lk .ic{font-size:22px;flex:none}
+.jfr .lk b{display:block;font-size:14px;color:#fff}
+.jfr .lk .ar{margin-inline-start:auto;font-size:18px;animation:jfNudge 1.2s ease-in-out infinite}
+.jfr[dir=rtl] .lk .ar{transform:scaleX(-1);animation-name:jfNudgeR}
+.jfr .lk .nw{position:absolute;top:8px;inset-inline-end:10px;font-size:10px;font-weight:700;background:#FFD43B;color:#1E2330;padding:1px 7px;border-radius:999px;animation:jfPulse 1.4s ease-in-out infinite}
+.jfr .lk:nth-child(1){--c1:#4F46E5;--c2:#0EA5E9}.jfr .lk:nth-child(2){--c1:#E8590C;--c2:#C2255C}
+.jfr .lk:nth-child(3){--c1:#0A8F6A;--c2:#4F46E5}.jfr .lk:nth-child(4){--c1:#7048E8;--c2:#C2255C}
+@keyframes jfHue{0%,100%{background:var(--c1)}50%{background:var(--c2)}}
+@keyframes jfShine{0%{left:-60%}60%,100%{left:130%}}
+@keyframes jfNudge{0%,100%{translate:0}50%{translate:4px}}
+@keyframes jfNudgeR{0%,100%{translate:0}50%{translate:-4px}}
+@keyframes jfPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+@media (prefers-reduced-motion:reduce){.jfr .lk,.jfr .lk::after,.jfr .lk .ar,.jfr .lk .nw{animation:none}.jfr .lk:hover{transform:none}}
+@media (max-width:480px){.jfr .m{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.jfr .v{font-size:18px}}
+.jfr .brand{font-size:12px;color:var(--jf-muted);margin-top:12px;text-align:center}
+.jfr .brand a{color:inherit}
+.jfr .nojs a{color:var(--jf-brand)}
+</style>
+<div class="jfr" id="jfr"><noscript><div class="nojs">Job Finder · <a href="https://itravail.com/">itravail.com</a></div></noscript></div>
+<script>
+const DATA={
+  dir:"ltr",              // "rtl" for Arabic, Hebrew, Persian, Urdu; "ltr" otherwise
+  today:"YYYY-MM-DD",     // today's date
+  stats:{checked:0,shown:0,best:0},
+  labels:{checked:"Offers checked",shown:"Open & relevant",best:"Best match",all:"All",view:"View offer",letter:"Write a cover letter",cv:"Tailor my CV",left:"days left",closesToday:"closes today",nodate:"No deadline stated",unverified:"date not verified",publicSec:"Public sector",salary:"",scam:"Possible scam"},
+  jobs:[ // one object per offer, best first. salary: exactly as written in the offer, or "" . sector: "private" | "public"
+    {title:"",employer:"",source:"",city:"",country:"",contract:"",salary:"",published:"YYYY-MM-DD or empty",deadline:"YYYY-MM-DD or empty",dateVerified:true,score:0,why:"",gap:"",url:"",sector:"private",scam:false}
+  ],
+  links:[ // itravail.com closing cards, in the order defined in references/itravail.md
+    {icon:"🔎",title:"",text:"",url:"https://itravail.com/en/",badge:"Free"}
+  ]
+};
+(function(){const R=document.getElementById("jfr"),L=DATA.labels;R.dir=DATA.dir;const T=new Date(DATA.today+"T00:00:00");
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const safe=u=>/^https?:\/\//i.test(String(u||""))?u:"#";
+const places=[...new Set(DATA.jobs.map(j=>j.city).filter(Boolean))];
+const left=j=>{if(!j.deadline)return j.dateVerified===false?L.unverified:L.nodate;const d=Math.round((new Date(j.deadline+"T00:00:00")-T)/864e5);return d<=0?L.closesToday:d+" "+L.left};
+const col=s=>s>=85?["var(--jf-ok-bg)","var(--jf-ok)"]:s>=75?["var(--jf-mid-bg)","var(--jf-brand)"]:["var(--jf-warn-bg)","var(--jf-warn)"];
+const ask=p=>{try{if(typeof sendPrompt==="function"){sendPrompt(p);return}}catch(e){}try{navigator.clipboard.writeText(p)}catch(e){}};
+R.innerHTML=`<div class="m"><div class="mc"><p class="l">${esc(L.checked)}</p><p class="v">${+DATA.stats.checked||0}</p></div><div class="mc"><p class="l">${esc(L.shown)}</p><p class="v">${+DATA.stats.shown||0}</p></div><div class="mc"><p class="l">${esc(L.best)}</p><p class="v">${+DATA.stats.best||0}%</p></div></div>${places.length>1?`<div class="chips" role="group"><button class="chip on" data-f="">${esc(L.all)}</button>${places.map(c=>`<button class="chip" data-f="${esc(c)}">${esc(c)}</button>`).join("")}</div>`:""}<div id="jfl"></div><div class="links">${DATA.links.map(l=>`<a class="lk" href="${esc(safe(l.url))}" target="_blank" rel="noopener"><span class="ic" aria-hidden="true">${esc(l.icon||"✨")}</span><span><b>${esc(l.title)}</b>${esc(l.text)}</span><span class="ar" aria-hidden="true">→</span>${l.badge?`<span class="nw">${esc(l.badge)}</span>`:""}</a>`).join("")}</div><div class="brand">Job Finder · <a href="https://itravail.com/" target="_blank" rel="noopener">itravail.com</a></div>`;
+function card(j,i){const s=Math.max(0,Math.min(100,+j.score||0));const[b,t]=col(s);const k=`${j.title} — ${j.employer} (${[j.city,j.country].filter(Boolean).join(", ")})`;const where=[j.city,j.country].filter(Boolean).join(", ");
+return `<div class="card${i===0?" top":""}"><div class="hd"><div class="sc" style="background:${b};color:${t}">${s}%</div><div style="flex:1;min-width:0"><p class="tt">${esc(j.title)}</p><p class="em">${esc(j.employer)}${j.source?" · "+esc(j.source):""}</p></div></div><div class="tags">${where?`<span class="tag">📍 ${esc(where)}</span>`:""}${j.contract?`<span class="tag">📄 ${esc(j.contract)}</span>`:""}${j.salary?`<span class="tag">💰 ${esc(j.salary)}</span>`:""}<span class="tag">⏳ ${esc(left(j))}</span>${j.scam?`<span class="tag warn">⚠️ ${esc(L.scam)}</span>`:""}</div><div class="bar"><span style="width:${s}%"></span></div><p class="why">✅ ${esc(j.why)}</p>${j.gap?`<p class="gap">⚠️ ${esc(j.gap)}</p>`:""}<div class="acts"><a class="btn pri" href="${esc(safe(j.url))}" target="_blank" rel="noopener">${esc(L.view)} ↗</a><button class="btn" data-p="${esc(L.letter+": "+k)}">${esc(L.letter)}</button><button class="btn" data-p="${esc(L.cv+": "+k)}">${esc(L.cv)}</button></div></div>`}
+function render(f){const js=DATA.jobs.filter(j=>!f||j.city===f);const pr=js.filter(j=>j.sector!=="public"),pu=js.filter(j=>j.sector==="public");let h=pr.map(card).join("");if(pu.length)h+=`<p class="sec">🏛️ ${esc(L.publicSec)}</p>`+pu.map((j,i)=>card(j,i+99)).join("");const el=document.getElementById("jfl");el.innerHTML=h;el.querySelectorAll("button[data-p]").forEach(x=>x.onclick=()=>ask(x.dataset.p))}
+R.querySelectorAll(".chip").forEach(c=>c.onclick=()=>{R.querySelectorAll(".chip").forEach(z=>z.classList.remove("on"));c.classList.add("on");render(c.dataset.f)});
+render("")})();
+</script>

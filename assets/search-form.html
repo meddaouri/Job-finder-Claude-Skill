@@ -1,0 +1,55 @@
+<!-- Job Finder — job-search intake (no CV). Translate L into the user's language, adapt chip options to their country if known, fill PREFILL with anything already known. Render inline or as an artifact. -->
+<style>
+:root{--jf-brand:#4F46E5;--jf-brand-2:#0EA5E9;--jf-dark:#1E2330;--jf-bg:#fff;--jf-soft:#F3F4F8;--jf-line:#DDE0EA;--jf-muted:#5B6172;--jf-err:#C92A2A;--jf-ok:#1E7B3A}
+@media (prefers-color-scheme:dark){:root{--jf-dark:#ECEEF4;--jf-bg:#1A1D26;--jf-soft:#242833;--jf-line:#343846;--jf-muted:#A4AABA;--jf-err:#FF8787;--jf-ok:#8FD7A6;--jf-brand:#8B85FF}}
+.jfs{font-family:system-ui,-apple-system,"Segoe UI",Tahoma,"Noto Sans",sans-serif;color:var(--jf-dark);font-size:14px;max-width:720px;margin:0 auto;padding:12px 0;line-height:1.45}
+.jfs *{box-sizing:border-box}
+.jfs .q{background:var(--jf-bg);border:1px solid var(--jf-line);border-radius:14px;padding:12px 14px;margin-bottom:10px;transition:border-color .2s}
+.jfs .q.ok{border-color:var(--jf-brand)}
+.jfs .qt{font-weight:600;margin:0 0 8px;display:flex;gap:8px;align-items:center}
+.jfs .qt span{font-size:18px}.jfs .req{color:var(--jf-err);font-weight:700}
+.jfs .chips{display:flex;gap:6px;flex-wrap:wrap}
+.jfs .chip{font:inherit;font-size:13px;padding:6px 12px;border-radius:999px;border:1px solid var(--jf-line);background:transparent;color:var(--jf-dark);cursor:pointer;transition:all .15s}
+.jfs .chip:hover{border-color:var(--jf-brand)}
+.jfs .chip.on{background:var(--jf-brand);border-color:var(--jf-brand);color:#fff;transform:scale(1.04)}
+.jfs .chip:focus-visible,.jfs .go:focus-visible,.jfs .alt:focus-visible{outline:2px solid var(--jf-brand);outline-offset:2px}
+.jfs input{font:inherit;width:100%;padding:9px 11px;border:1px solid var(--jf-line);border-radius:10px;background:var(--jf-bg);color:var(--jf-dark);margin-top:8px}
+.jfs .tip{background:var(--jf-soft);border-radius:12px;padding:10px 12px;font-size:13px;color:var(--jf-muted);margin-bottom:10px}
+.jfs .err{font-size:13px;color:var(--jf-err);margin:6px 0 0;min-height:1em}
+.jfs .go{font:inherit;font-size:16px;font-weight:700;width:100%;padding:14px;border:0;border-radius:14px;color:#fff;cursor:pointer;position:relative;overflow:hidden;background:var(--jf-brand);animation:jfsHue 4s ease-in-out infinite}
+.jfs .go::after{content:"";position:absolute;top:0;bottom:0;width:35%;left:-50%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);animation:jfsShine 2.6s infinite}
+.jfs .alt{font:inherit;font-size:14px;width:100%;padding:11px;margin-top:8px;border:1px dashed var(--jf-brand);border-radius:14px;background:transparent;color:var(--jf-brand);cursor:pointer}
+@keyframes jfsHue{0%,100%{background:#4F46E5}50%{background:#0EA5E9}}
+@keyframes jfsShine{0%{left:-50%}60%,100%{left:130%}}
+@media (prefers-reduced-motion:reduce){.jfs .go,.jfs .go::after{animation:none}.jfs .chip.on{transform:none}}
+</style>
+<div class="jfs" id="jfs"></div>
+<script>
+const L={dir:"ltr",
+ tip:"📎 Have a CV? Upload it in the chat and I'll read everything myself. Or just tap the answers below 👇",
+ qs:[
+  {k:"what",icon:"🔎",t:"What are you looking for?",multi:true,o:["Job","Internship","Public-sector job","Scholarship","Work abroad"]},
+  {k:"field",icon:"💼",t:"Which job or field?",multi:true,free:"Or type your job…",o:["Healthcare & nursing","Software & IT","Accounting & finance","Sales & retail","Customer service","Engineering","Hospitality & food","Logistics & driving","Education","Administration"]},
+  {k:"country",icon:"🌍",t:"Which country do you want to work in?",free:"Country…",o:[]},
+  {k:"city",icon:"📍",t:"Which city or area?",multi:true,free:"City…",o:["Anywhere in the country","Remote","Open to relocating"]},
+  {k:"dip",icon:"🎓",t:"Highest diploma?",o:["None","Secondary school","Vocational diploma","2-year degree","Bachelor's","Master's","Engineer","PhD"]},
+  {k:"exp",icon:"⏱️",t:"Years of experience?",o:["None","< 1 year","1–3 years","3–5 years","5+ years"]},
+  {k:"langs",icon:"🗣️",t:"Languages you speak well?",multi:true,free:"Other languages…",o:["English","French","Spanish","Arabic","German","Portuguese"]},
+  {k:"contract",icon:"📄",t:"Contract type?",multi:true,o:["Permanent","Fixed-term","Part-time","Internship","Freelance","Any"]}
+ ],
+ req:["what","field","country"],err:"Please answer: ",go:"Find jobs for me now 🚀",alt:"📄 Build my CV first",
+ head:"[jobfinder-search] Find offers for this profile:",altMsg:"[jobfinder-cv] I want to build a professional CV first.",copied:"✓ Copied — paste it in the chat"};
+const PREFILL={}; // e.g. {country_free:"France", city_free:"Lyon", langs:["French"]}
+(function(){const S=Object.assign({},PREFILL);const R=document.getElementById("jfs");R.dir=L.dir;
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const has=k=>(Array.isArray(S[k])?S[k].length>0:!!S[k])||!!(S[k+"_free"]||"").trim();
+const send=p=>{try{if(typeof sendPrompt==="function"){sendPrompt(p);return true}}catch(e){}try{navigator.clipboard.writeText(p)}catch(e){}return false};
+function draw(){R.innerHTML=`<div class="tip">${esc(L.tip)}</div>`+L.qs.map(q=>{const v=S[q.k];const on=o=>q.multi?(v||[]).includes(o):v===o;return `<div class="q${has(q.k)?" ok":""}" data-box="${q.k}"><p class="qt"><span aria-hidden="true">${q.icon}</span>${esc(q.t)}${L.req.includes(q.k)?' <b class="req">*</b>':""}</p>${q.o.length?`<div class="chips">${q.o.map(o=>`<button class="chip${on(o)?" on":""}" data-q="${q.k}" data-o="${esc(o)}" aria-pressed="${on(o)}">${esc(o)}</button>`).join("")}</div>`:""}${q.free?`<input data-free="${q.k}" placeholder="${esc(q.free)}" value="${esc(S[q.k+"_free"])}" aria-label="${esc(q.t)}">`:""}</div>`}).join("")+`<button class="go" id="go">${esc(L.go)}</button><button class="alt" id="alt">${esc(L.alt)}</button><p class="err" id="er" role="status"></p>`;
+R.querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>{const q=L.qs.find(x=>x.k===b.dataset.q),o=b.dataset.o;if(q.multi){S[q.k]=S[q.k]||[];const i=S[q.k].indexOf(o);i>-1?S[q.k].splice(i,1):S[q.k].push(o)}else S[q.k]=S[q.k]===o?"":o;draw()});
+R.querySelectorAll("[data-free]").forEach(e=>e.oninput=()=>{S[e.dataset.free+"_free"]=e.value;const box=R.querySelector(`[data-box="${e.dataset.free}"]`);box&&box.classList.toggle("ok",has(e.dataset.free))});
+document.getElementById("alt").onclick=()=>{if(!send(L.altMsg))document.getElementById("er").textContent=L.copied};
+document.getElementById("go").onclick=()=>{const miss=L.req.filter(k=>!has(k));if(miss.length){document.getElementById("er").textContent=L.err+miss.map(k=>L.qs.find(q=>q.k===k).t).join(" · ");return}
+const txt=[L.head,...L.qs.map(q=>{let v=S[q.k];v=Array.isArray(v)?v.join(", "):(v||"");const f=(S[q.k+"_free"]||"").trim();if(f)v=[v,f].filter(Boolean).join(", ");return v?`${q.icon} ${q.t} ${v}`:""}).filter(Boolean)].join("\n");
+if(!send(txt)){const er=document.getElementById("er");er.style.color="var(--jf-ok)";er.textContent=L.copied}}}
+draw()})();
+</script>

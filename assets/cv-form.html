@@ -1,0 +1,97 @@
+<!-- Job Finder — CV builder form. Translate L into the user's language; fill PREFILL from an old CV (or leave empty). The "Generate" button sends everything back to Claude with sendPrompt. Render inline or as an artifact. -->
+<style>
+:root{--jf-brand:#4F46E5;--jf-brand-2:#0EA5E9;--jf-dark:#1E2330;--jf-bg:#fff;--jf-soft:#F3F4F8;--jf-line:#DDE0EA;--jf-muted:#5B6172;--jf-err:#C92A2A;--jf-ok:#1E7B3A}
+@media (prefers-color-scheme:dark){:root{--jf-dark:#ECEEF4;--jf-bg:#1A1D26;--jf-soft:#242833;--jf-line:#343846;--jf-muted:#A4AABA;--jf-err:#FF8787;--jf-ok:#8FD7A6;--jf-brand:#8B85FF}}
+.jfc{font-family:system-ui,-apple-system,"Segoe UI",Tahoma,"Noto Sans",sans-serif;color:var(--jf-dark);font-size:14px;max-width:720px;margin:0 auto;padding:12px 0;line-height:1.45}
+.jfc *{box-sizing:border-box}
+.jfc .pg{position:sticky;top:0;background:var(--jf-bg);padding:8px 0 10px;z-index:2}
+.jfc .pgt{display:flex;justify-content:space-between;font-size:12px;color:var(--jf-muted);margin-bottom:6px}
+.jfc .pgb{height:8px;border-radius:4px;background:var(--jf-soft);overflow:hidden}.jfc .pgb span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--jf-brand),var(--jf-brand-2));transition:width .3s}
+.jfc .st{background:var(--jf-bg);border:1px solid var(--jf-line);border-radius:14px;padding:14px 16px;margin-bottom:12px}
+.jfc .sh{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.jfc .sn{width:28px;height:28px;border-radius:50%;background:var(--jf-brand);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex:none}
+.jfc .sn.ok{background:var(--jf-ok)}
+.jfc .stt{font-weight:600;font-size:15px}
+.jfc .g{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
+.jfc input,.jfc textarea{font:inherit;width:100%;padding:9px 11px;border:1px solid var(--jf-line);border-radius:10px;background:var(--jf-bg);color:var(--jf-dark)}
+.jfc textarea{min-height:64px;resize:vertical}
+.jfc input:focus,.jfc textarea:focus{outline:2px solid var(--jf-brand);outline-offset:0;border-color:transparent}
+.jfc .chips{display:flex;gap:6px;flex-wrap:wrap}
+.jfc .chip{font:inherit;font-size:13px;padding:6px 12px;border-radius:999px;border:1px solid var(--jf-line);background:transparent;color:var(--jf-dark);cursor:pointer;transition:all .15s}
+.jfc .chip.on{background:var(--jf-brand);border-color:var(--jf-brand);color:#fff}
+.jfc .chip:focus-visible,.jfc .go:focus-visible,.jfc .add:focus-visible{outline:2px solid var(--jf-brand);outline-offset:2px}
+.jfc .row{border:1px dashed var(--jf-line);border-radius:10px;padding:10px;margin-bottom:8px;position:relative}
+.jfc .rm{position:absolute;top:6px;inset-inline-end:8px;border:0;background:transparent;color:var(--jf-muted);cursor:pointer;font-size:16px}
+.jfc .add{font:inherit;font-size:13px;border:1px dashed var(--jf-brand);color:var(--jf-brand);background:transparent;border-radius:10px;padding:8px 12px;cursor:pointer;width:100%}
+.jfc .lang{display:grid;grid-template-columns:minmax(120px,1fr) 2fr auto;gap:8px;align-items:center;margin-bottom:6px}
+.jfc .lang input{margin:0}
+.jfc .hint{font-size:12px;color:var(--jf-muted);margin:8px 0 6px}
+.jfc .err{font-size:13px;color:var(--jf-err);margin:6px 0 0;min-height:1em}
+.jfc .go{font:inherit;font-size:16px;font-weight:700;width:100%;padding:14px;border:0;border-radius:14px;color:#fff;background:var(--jf-brand);cursor:pointer;position:relative;overflow:hidden;animation:jfcHue 4s ease-in-out infinite}
+.jfc .go::after{content:"";position:absolute;top:0;bottom:0;width:35%;left:-50%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);animation:jfcShine 2.6s infinite}
+@keyframes jfcHue{0%,100%{background:#4F46E5}50%{background:#0EA5E9}}
+@keyframes jfcShine{0%{left:-50%}60%,100%{left:130%}}
+@media (prefers-reduced-motion:reduce){.jfc .go,.jfc .go::after,.jfc .pgb span{animation:none;transition:none}}
+@media (max-width:480px){.jfc .lang{grid-template-columns:1fr}}
+</style>
+<div class="jfc" id="jfc"></div>
+<script>
+const L={dir:"ltr",progress:"CV progress",s1:"Your details",s2:"Target job & country",s3:"Education",s4:"Experience & internships",s5:"Skills",s6:"Languages",s7:"Extras (optional)",
+ name:"Full name",city:"City",country:"Country of residence",phone:"Phone",email:"Email",linkedin:"LinkedIn / portfolio (optional)",
+ role:"e.g. Registered Nurse, Junior Developer, Accountant…",target:"Country where you'll apply",
+ dipName:"Diploma (e.g. Bachelor of Nursing)",dipSchool:"School and city",dipYear:"Year",addDip:"+ Add a diploma",
+ expRole:"Job title",expCo:"Employer and city",expFrom:"From (e.g. 09/2023)",expTo:"To (or: Present)",expTasks:"What did you do? Results? (plain words are fine)",addExp:"+ Add experience or internship",noExp:"No experience yet",
+ skills:"Software, tools and skills (Excel, React, SAP…)",licence:"Driving licence",extra:"Certifications, projects, volunteering, interests…",
+ langName:"Language",addLang:"+ Add a language",levels:["Native","Fluent","Good","Intermediate","Basic"],
+ fmt:"CV format",fmts:["Auto (target country)","France","USA resume","UK","Canada","Germany","Europass","Gulf"],
+ cvLang:"CV language",cvLangs:["English","Français","Español","العربية","Deutsch","Português"],
+ photoNote:"No photo is added unless you send one and it's usual in the target country.",
+ go:"Build my CV ✨",errName:"Please enter your name",errRole:"Please enter the job you want",errContact:"Add a phone or an email",
+ rolesQuick:["Registered Nurse","Software Developer","Accountant","Sales Associate","Customer Service","Administrative Assistant","Engineer","Driver"],
+ head:"[jobfinder-cv] Build a professional CV with this information:",copied:"✓ Copied — paste it in the chat"};
+const PREFILL={}; // e.g. {name:"",city:"",country:"",phone:"",email:"",role:"",target:"",dips:[{name:"",school:"",year:""}],exps:[{role:"",co:"",from:"",to:"",tasks:""}],skills:"",licence:false,langs:[{n:"English",l:"Fluent"}],extra:"",fmt:"Auto (target country)",cvLang:"English"}
+(function(){
+const S=Object.assign({name:"",city:"",country:"",phone:"",email:"",linkedin:"",role:"",target:"",dips:[{}],exps:[{}],noExp:false,skills:"",licence:false,langs:[{}],extra:"",fmt:L.fmts[0],cvLang:L.cvLangs[0]},PREFILL);
+const R=document.getElementById("jfc");R.dir=L.dir;
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const inp=(k,ph,v,t)=>`<input data-k="${k}" placeholder="${esc(ph)}" aria-label="${esc(ph)}" value="${esc(v)}" ${t?`type="${t}"`:""}>`;
+const st=(n,t,body,ok)=>`<div class="st"><div class="sh"><div class="sn${ok?" ok":""}">${ok?"✓":n}</div><div class="stt">${esc(t)}</div></div>${body}</div>`;
+function done(){return{1:!!(S.name&&(S.phone||S.email)),2:!!S.role,3:S.dips.some(d=>d.name),4:S.noExp||S.exps.some(e=>e.role),5:!!S.skills,6:S.langs.some(x=>x.n&&x.l)}}
+function draw(){const d=done();
+R.innerHTML=`<div class="pg"><div class="pgt"><span>${esc(L.progress)}</span><span id="pc"></span></div><div class="pgb"><span id="pb"></span></div></div>`+
+st(1,L.s1,`<div class="g">${inp("name",L.name,S.name)}${inp("city",L.city,S.city)}${inp("country",L.country,S.country)}${inp("phone",L.phone,S.phone,"tel")}${inp("email",L.email,S.email,"email")}${inp("linkedin",L.linkedin,S.linkedin)}</div>`,d[1])+
+st(2,L.s2,`${inp("role",L.role,S.role)}<div class="chips" style="margin:8px 0">${L.rolesQuick.map(r=>`<button class="chip${S.role===r?" on":""}" data-role="${esc(r)}">${esc(r)}</button>`).join("")}</div>${inp("target",L.target,S.target)}`,d[2])+
+st(3,L.s3,S.dips.map((x,i)=>`<div class="row">${i?`<button class="rm" data-rm="dips:${i}" aria-label="remove">✕</button>`:""}<div class="g"><input data-a="dips:${i}:name" placeholder="${esc(L.dipName)}" value="${esc(x.name)}"><input data-a="dips:${i}:school" placeholder="${esc(L.dipSchool)}" value="${esc(x.school)}"><input data-a="dips:${i}:year" placeholder="${esc(L.dipYear)}" value="${esc(x.year)}"></div></div>`).join("")+`<button class="add" data-add="dips">${esc(L.addDip)}</button>`,d[3])+
+st(4,L.s4,`<div class="chips" style="margin-bottom:8px"><button class="chip${S.noExp?" on":""}" data-noexp>${esc(L.noExp)}</button></div>`+(S.noExp?"":S.exps.map((x,i)=>`<div class="row">${i?`<button class="rm" data-rm="exps:${i}" aria-label="remove">✕</button>`:""}<div class="g"><input data-a="exps:${i}:role" placeholder="${esc(L.expRole)}" value="${esc(x.role)}"><input data-a="exps:${i}:co" placeholder="${esc(L.expCo)}" value="${esc(x.co)}"><input data-a="exps:${i}:from" placeholder="${esc(L.expFrom)}" value="${esc(x.from)}"><input data-a="exps:${i}:to" placeholder="${esc(L.expTo)}" value="${esc(x.to)}"></div><textarea data-a="exps:${i}:tasks" placeholder="${esc(L.expTasks)}" style="margin-top:8px">${esc(x.tasks)}</textarea></div>`).join("")+`<button class="add" data-add="exps">${esc(L.addExp)}</button>`),d[4])+
+st(5,L.s5,`<textarea data-k="skills" placeholder="${esc(L.skills)}">${esc(S.skills)}</textarea><div class="chips" style="margin-top:8px"><button class="chip${S.licence?" on":""}" data-licence>🚗 ${esc(L.licence)}</button></div>`,d[5])+
+st(6,L.s6,S.langs.map((x,i)=>`<div class="lang"><input data-a="langs:${i}:n" placeholder="${esc(L.langName)}" value="${esc(x.n)}"><div class="chips">${L.levels.map(v=>`<button class="chip${x.l===v?" on":""}" data-lg="${i}" data-lv="${esc(v)}">${esc(v)}</button>`).join("")}</div>${i?`<button class="rm" style="position:static" data-rm="langs:${i}" aria-label="remove">✕</button>`:"<span></span>"}</div>`).join("")+`<button class="add" data-add="langs">${esc(L.addLang)}</button>`,d[6])+
+st(7,L.s7,`<textarea data-k="extra" placeholder="${esc(L.extra)}">${esc(S.extra)}</textarea><p class="hint">${esc(L.fmt)}</p><div class="chips">${L.fmts.map(c=>`<button class="chip${S.fmt===c?" on":""}" data-fm="${esc(c)}">${esc(c)}</button>`).join("")}</div><p class="hint">${esc(L.cvLang)}</p><div class="chips">${L.cvLangs.map(c=>`<button class="chip${S.cvLang===c?" on":""}" data-cl="${esc(c)}">${esc(c)}</button>`).join("")}</div><p class="hint">📷 ${esc(L.photoNote)}</p>`,false)+
+`<button class="go" id="go">${esc(L.go)}</button><p class="err" id="er" role="status"></p>`;
+bind();prog()}
+function prog(){const d=done(),n=Object.values(d).filter(Boolean).length,p=Math.round(n/6*100);const pb=document.getElementById("pb"),pc=document.getElementById("pc");if(pb)pb.style.width=p+"%";if(pc)pc.textContent=p+"%"}
+function bind(){
+R.querySelectorAll("[data-k]").forEach(e=>e.oninput=()=>{S[e.dataset.k]=e.value;prog();document.getElementById("er").textContent=""});
+R.querySelectorAll("[data-a]").forEach(e=>e.oninput=()=>{const[a,i,f]=e.dataset.a.split(":");S[a][+i][f]=e.value;prog()});
+R.querySelectorAll("[data-role]").forEach(b=>b.onclick=()=>{S.role=b.dataset.role;draw()});
+R.querySelectorAll("[data-add]").forEach(b=>b.onclick=()=>{S[b.dataset.add].push({});draw()});
+R.querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>{const[a,i]=b.dataset.rm.split(":");S[a].splice(+i,1);draw()});
+R.querySelectorAll("[data-noexp]").forEach(b=>b.onclick=()=>{S.noExp=!S.noExp;draw()});
+R.querySelectorAll("[data-licence]").forEach(b=>b.onclick=()=>{S.licence=!S.licence;draw()});
+R.querySelectorAll("[data-lg]").forEach(b=>b.onclick=()=>{const x=S.langs[+b.dataset.lg];x.l=x.l===b.dataset.lv?"":b.dataset.lv;draw()});
+R.querySelectorAll("[data-fm]").forEach(b=>b.onclick=()=>{S.fmt=b.dataset.fm;draw()});
+R.querySelectorAll("[data-cl]").forEach(b=>b.onclick=()=>{S.cvLang=b.dataset.cl;draw()});
+document.getElementById("go").onclick=submit}
+function submit(){const er=document.getElementById("er");
+if(!S.name.trim()){er.textContent=L.errName;return}if(!S.role.trim()){er.textContent=L.errRole;return}if(!S.phone.trim()&&!S.email.trim()){er.textContent=L.errContact;return}
+const lines=[L.head,
+`Name: ${S.name} | City: ${S.city} | Country: ${S.country} | Phone: ${S.phone} | Email: ${S.email}${S.linkedin?" | Link: "+S.linkedin:""}`,
+`Target job: ${S.role}${S.target?" | Target country: "+S.target:""}`,
+"Education:",...S.dips.filter(d=>d.name).map(d=>`- ${d.name} — ${d.school||""} — ${d.year||""}`),
+"Experience:",...(S.noExp?["- No experience yet"]:S.exps.filter(e=>e.role).map(e=>`- ${e.role} — ${e.co||""} — ${e.from||""} → ${e.to||""}: ${e.tasks||""}`)),
+`Skills: ${S.skills}${S.licence?" | Driving licence":""}`,
+`Languages: ${S.langs.filter(x=>x.n).map(x=>x.n+(x.l?" ("+x.l+")":"")).join(", ")}`,
+S.extra?`Extras: ${S.extra}`:"",`Format: ${S.fmt} | CV language: ${S.cvLang}`].filter(Boolean).join("\n");
+try{if(typeof sendPrompt==="function"){sendPrompt(lines);return}}catch(e){}
+try{navigator.clipboard.writeText(lines)}catch(e){}er.style.color="var(--jf-ok)";er.textContent=L.copied}
+draw()})();
+</script>

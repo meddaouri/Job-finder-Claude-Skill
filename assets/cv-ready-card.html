@@ -1,0 +1,62 @@
+<!-- Job Finder — CV-ready card, shown right after the CV file is delivered. Translate and fill D. Render inline or as an artifact. -->
+<style>
+:root{--jf-brand:#4F46E5;--jf-brand-2:#0EA5E9;--jf-dark:#1E2330;--jf-bg:#fff;--jf-soft:#F3F4F8;--jf-line:#DDE0EA;--jf-muted:#5B6172;--jf-ok:#1E7B3A;--jf-ok-bg:#E6F4EA;--jf-warn:#8A5A00}
+@media (prefers-color-scheme:dark){:root{--jf-dark:#ECEEF4;--jf-bg:#1A1D26;--jf-soft:#242833;--jf-line:#343846;--jf-muted:#A4AABA;--jf-ok:#8FD7A6;--jf-ok-bg:#163A22;--jf-warn:#F3C76B;--jf-brand:#8B85FF}}
+.jfk{font-family:system-ui,-apple-system,"Segoe UI",Tahoma,"Noto Sans",sans-serif;color:var(--jf-dark);font-size:14px;max-width:720px;margin:0 auto;padding:12px 0;line-height:1.45}
+.jfk *{box-sizing:border-box}
+.jfk .hero{display:flex;gap:14px;align-items:center;background:var(--jf-bg);border:2px solid var(--jf-brand);border-radius:16px;padding:16px;flex-wrap:wrap}
+.jfk .av{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--jf-brand),var(--jf-brand-2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;flex:none}
+.jfk .nm{font-size:18px;font-weight:700;margin:0}.jfk .rl{color:var(--jf-brand);margin:2px 0 0;font-weight:600}
+.jfk .ok{margin-inline-start:auto;font-size:12px;background:var(--jf-ok-bg);color:var(--jf-ok);padding:4px 10px;border-radius:999px;font-weight:600;white-space:nowrap}
+.jfk .files{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.jfk .file{font-size:12px;padding:4px 10px;border-radius:8px;background:var(--jf-soft);color:var(--jf-muted)}
+.jfk .box{background:var(--jf-bg);border:1px solid var(--jf-line);border-radius:14px;padding:14px 16px;margin-top:10px}
+.jfk .meter{display:flex;align-items:center;gap:12px}
+.jfk .ring{--p:0;width:64px;height:64px;border-radius:50%;background:conic-gradient(var(--jf-brand) calc(var(--p)*1%),var(--jf-soft) 0);display:flex;align-items:center;justify-content:center;flex:none}
+.jfk .ring span{width:50px;height:50px;border-radius:50%;background:var(--jf-bg);display:flex;align-items:center;justify-content:center;font-weight:700}
+.jfk ul{list-style:none;margin:0;padding:0;flex:1}.jfk li{font-size:13px;margin:3px 0}
+.jfk li.no{color:var(--jf-warn)}
+.jfk .acts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;margin-top:10px}
+.jfk .act{font:inherit;font-size:14px;font-weight:600;padding:12px;border-radius:12px;border:1px solid var(--jf-line);background:var(--jf-bg);color:var(--jf-dark);cursor:pointer;text-align:start;transition:transform .15s,border-color .15s}
+.jfk .act:hover{transform:translateY(-2px);border-color:var(--jf-brand)}
+.jfk .act:focus-visible,.jfk .lk:focus-visible{outline:2px solid var(--jf-brand);outline-offset:2px}
+.jfk .act.main{grid-column:1/-1;border:0;color:#fff;text-align:center;font-size:16px;position:relative;overflow:hidden;background:var(--jf-brand);animation:jfkHue 4s ease-in-out infinite}
+.jfk .act.main::after,.jfk .lk::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);animation:jfkShine 2.6s infinite}
+.jfk .links{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:12px}
+.jfk .lk{position:relative;overflow:hidden;display:flex;align-items:center;gap:10px;padding:14px;border-radius:16px;text-decoration:none;color:#fff;font-size:13px;line-height:1.5;background:var(--c1);animation:jfkLk 4s ease-in-out infinite}
+.jfk .lk b{display:block;font-size:14px}.jfk .lk .ic{font-size:22px}
+.jfk .lk:nth-child(1){--c1:#4F46E5;--c2:#0EA5E9}.jfk .lk:nth-child(2){--c1:#E8590C;--c2:#C2255C}.jfk .lk:nth-child(3){--c1:#0A8F6A;--c2:#4F46E5}
+@keyframes jfkHue{0%,100%{background:#4F46E5}50%{background:#0EA5E9}}
+@keyframes jfkLk{0%,100%{background:var(--c1)}50%{background:var(--c2)}}
+@keyframes jfkShine{0%{left:-60%}60%,100%{left:130%}}
+@media (prefers-reduced-motion:reduce){.jfk .act.main,.jfk .act.main::after,.jfk .lk,.jfk .lk::after{animation:none}.jfk .act:hover{transform:none}}
+.jfk .brand{font-size:12px;color:var(--jf-muted);margin-top:12px;text-align:center}.jfk .brand a{color:inherit}
+</style>
+<div class="jfk" id="jfk"></div>
+<script>
+const D={dir:"ltr",name:"",role:"",ready:"✓ CV ready",
+ files:["CV_Firstname_Lastname.docx","CV_Firstname_Lastname.pdf"], // names of the files you delivered
+ strengthLabel:"CV strength",score:0, // 0-100, honest (references/cv-guide.md §6)
+ checks:[{ok:true,t:""}], // what's good (ok:true) / tips (ok:false)
+ actions:[ // main first; p = message sent to Claude
+  {main:true,t:"🚀 Find jobs with this CV",p:"[jobfinder-search] Find offers that match this CV"},
+  {t:"🌐 Version in another language",p:"Make a version of this CV in another language"},
+  {t:"✉️ Cover letter",p:"Write a general cover letter based on this CV"},
+  {t:"✏️ Change something",p:"I want to change something in the CV"}],
+ links:[{icon:"📄",title:"",text:"",url:"https://itravail.com/en/"}]}; // itravail.com cards (references/itravail.md)
+(function(){const R=document.getElementById("jfk");R.dir=D.dir;
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const safe=u=>/^https?:\/\//i.test(String(u||""))?u:"#";
+const ini=Array.from(D.name.split(/\s+/).filter(Boolean).slice(0,2).map(w=>Array.from(w)[0])).join("").toUpperCase();
+const sc=Math.max(0,Math.min(100,+D.score||0));
+R.innerHTML=`<div class="hero"><div class="av" aria-hidden="true">${esc(ini)}</div><div><p class="nm">${esc(D.name)}</p><p class="rl">${esc(D.role)}</p></div><span class="ok">${esc(D.ready)}</span></div>
+${D.files&&D.files.length?`<div class="files">${D.files.map(f=>`<span class="file">📎 ${esc(f)}</span>`).join("")}</div>`:""}
+<div class="box meter"><div class="ring" id="rg" role="img" aria-label="${esc(D.strengthLabel)} ${sc}%"><span id="rn">0%</span></div><ul><li style="font-weight:600;margin-bottom:6px">${esc(D.strengthLabel)}</li>${D.checks.filter(c=>c.t).map(c=>`<li class="${c.ok?"":"no"}">${c.ok?"✅":"💡"} ${esc(c.t)}</li>`).join("")}</ul></div>
+<div class="acts">${D.actions.map((a,i)=>`<button class="act${a.main?" main":""}" data-i="${i}">${esc(a.t)}</button>`).join("")}</div>
+<div class="links">${D.links.map(l=>`<a class="lk" href="${esc(safe(l.url))}" target="_blank" rel="noopener"><span class="ic" aria-hidden="true">${esc(l.icon)}</span><span><b>${esc(l.title)}</b>${esc(l.text)}</span></a>`).join("")}</div>
+<div class="brand">Job Finder · <a href="https://itravail.com/" target="_blank" rel="noopener">itravail.com</a></div>`;
+R.querySelectorAll("[data-i]").forEach(b=>b.onclick=()=>{const p=D.actions[+b.dataset.i].p;try{if(typeof sendPrompt==="function"){sendPrompt(p);return}}catch(e){}try{navigator.clipboard.writeText(p)}catch(e){}});
+const rg=document.getElementById("rg"),rn=document.getElementById("rn");
+if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches){rg.style.setProperty("--p",sc);rn.textContent=sc+"%";return}
+let v=0;const tm=setInterval(()=>{v=Math.min(sc,v+3);rg.style.setProperty("--p",v);rn.textContent=v+"%";if(v>=sc)clearInterval(tm)},25)})();
+</script>
