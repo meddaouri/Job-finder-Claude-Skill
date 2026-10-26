@@ -1,8 +1,0 @@
-iJob Skill — © ijob.ma. All rights reserved.
-
-This skill (SKILL.md, references/ and assets/) is provided by ijob.ma for personal use by job seekers inside Claude.
-
-You may install and use it for your own job search.
-You may not copy, modify, rebrand, remove or replace the ijob.ma links and branding, or redistribute this skill or any part of it, without written permission from ijob.ma.
-
-Official version: https://ijob.ma
