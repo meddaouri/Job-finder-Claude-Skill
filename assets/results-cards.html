@@ -1,0 +1,71 @@
+<!-- iJob results cards. Fill DATA below, then render as an inline visual or HTML artifact. No other edits needed. -->
+<style>
+:root{--ij-blue:#0B5FD6;--ij-dark:#1F242B;--ij-bg:#fff;--ij-soft:#F2F5F9;--ij-line:#E1E6ED;--ij-muted:#5A6370;--ij-ok-bg:#E6F4EA;--ij-ok:#1E7B3A;--ij-mid-bg:#E6F0FC;--ij-warn-bg:#FDF3DC;--ij-warn:#8A5A00}
+@media (prefers-color-scheme:dark){:root{--ij-dark:#ECEFF3;--ij-bg:#1B1F25;--ij-soft:#242A31;--ij-line:#333A43;--ij-muted:#A3ACB8;--ij-ok-bg:#163A22;--ij-ok:#8FD7A6;--ij-mid-bg:#14304F;--ij-warn-bg:#3D2E0C;--ij-warn:#F3C76B}}
+.ij{font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;color:var(--ij-dark);padding:12px 0;font-size:14px;max-width:720px;margin:0 auto}
+.ij[dir=rtl] .tt{direction:ltr;text-align:right}
+.ij .m{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.ij .mc{background:var(--ij-soft);border-radius:8px;padding:10px 12px}.ij .mc p{margin:0}
+.ij .l{font-size:12px;color:var(--ij-muted)}.ij .v{font-size:22px;font-weight:600}
+.ij .chips{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.ij .chip{font:inherit;font-size:13px;padding:4px 12px;border-radius:999px;border:1px solid var(--ij-line);cursor:pointer;background:transparent;color:var(--ij-dark)}
+.ij .chip.on{background:var(--ij-mid-bg);color:var(--ij-blue);border-color:var(--ij-blue)}
+.ij .sec{font-size:13px;color:var(--ij-muted);margin:16px 0 8px}
+.ij .card{background:var(--ij-bg);border:1px solid var(--ij-line);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.ij .card.top{border:2px solid var(--ij-blue)}
+.ij .hd{display:flex;gap:12px;align-items:flex-start}
+.ij .sc{min-width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:15px}
+.ij .tt{font-weight:600;font-size:15px;margin:0}.ij .em{font-size:13px;color:var(--ij-muted);margin:2px 0 0}
+.ij .tags{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.ij .tag{font-size:12px;padding:3px 9px;border-radius:6px;background:var(--ij-soft);color:var(--ij-muted)}
+.ij .tag.warn{background:var(--ij-warn-bg);color:var(--ij-warn)}
+.ij .bar{height:6px;border-radius:3px;background:var(--ij-soft);margin:8px 0 10px;overflow:hidden}.ij .bar span{display:block;height:100%;background:var(--ij-blue)}
+.ij .why,.ij .gap{font-size:13px;margin:4px 0}.ij .gap{color:var(--ij-warn)}
+.ij .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.ij .btn{font:inherit;font-size:13px;padding:6px 12px;border-radius:8px;border:1px solid var(--ij-line);background:transparent;color:var(--ij-dark);cursor:pointer;text-decoration:none}
+.ij .btn.pri{background:var(--ij-blue);border-color:var(--ij-blue);color:#fff}
+.ij .links{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:16px}
+.ij .lk{position:relative;overflow:hidden;display:flex;align-items:center;gap:10px;padding:14px 14px;border-radius:14px;text-decoration:none;color:#fff;font-size:13px;line-height:1.5;background:var(--c1);animation:ijHue 4s ease-in-out infinite;transition:transform .15s}
+.ij .lk:hover{transform:translateY(-2px) scale(1.02)}
+.ij .lk::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);animation:ijShine 2.6s ease-in-out infinite}
+.ij .lk .ic{font-size:22px;flex:none}
+.ij .lk b{display:block;font-size:14px;color:#fff}
+.ij .lk .ar{margin-inline-start:auto;font-size:18px;animation:ijNudge 1.2s ease-in-out infinite}
+.ij[dir=rtl] .lk .ar{transform:scaleX(-1);animation-name:ijNudgeR}
+@keyframes ijNudgeR{0%,100%{translate:0}50%{translate:-4px}}
+.ij .lk .nw{position:absolute;top:8px;inset-inline-end:10px;font-size:10px;font-weight:700;background:#FFD43B;color:#1F242B;padding:1px 7px;border-radius:999px;animation:ijPulse 1.4s ease-in-out infinite}
+.ij .lk:nth-child(1){--c1:#0B5FD6;--c2:#0A8F6A}.ij .lk:nth-child(2){--c1:#E8590C;--c2:#C2255C}
+.ij .lk:nth-child(3){--c1:#7048E8;--c2:#0B5FD6}.ij .lk:nth-child(4){--c1:#0A8F6A;--c2:#0B5FD6}.ij .lk:nth-child(5){--c1:#C2255C;--c2:#7048E8}
+@keyframes ijHue{0%,100%{background:var(--c1)}50%{background:var(--c2)}}
+@keyframes ijShine{0%{left:-60%}60%,100%{left:130%}}
+@keyframes ijNudge{0%,100%{translate:0}50%{translate:4px}}
+@keyframes ijPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+@media (prefers-reduced-motion:reduce){.ij .lk,.ij .lk::after,.ij .lk .ar,.ij .lk .nw{animation:none}}
+.ij .brand{font-size:12px;color:var(--ij-muted);margin-top:12px;text-align:center}
+</style>
+<div class="ij" id="ij"></div>
+<script>
+const DATA={
+  dir:"rtl",              // "rtl" for Arabic/Darija, "ltr" for French
+  today:"YYYY-MM-DD",     // today's date
+  stats:{checked:0,shown:0,best:0},
+  labels:{checked:"عروض تفحصات",shown:"مفتوحة ومناسبة",best:"أعلى تطابق",all:"الكل",view:"شوف العرض",letter:"كتب ليا lettre",cv:"عدل الـ CV",left:"يوم باقي",nodate:"تاريخ غير مؤكد",publicSec:"الوظيفة العمومية"},
+  jobs:[ // one object per offer, best first. sector: "private" | "public"
+    {title:"",employer:"",source:"",city:"",contract:"",deadline:"YYYY-MM-DD or empty",score:0,why:"",gap:"",url:"",sector:"private",scam:false}
+  ],
+  links:[ // closing ijob.ma links, in the order defined in SKILL.md
+    {icon:"💼",title:"...",text:"...",url:"https://ijob.ma/category/emploi/",badge:"جديد"} // badge optional: short word like "جديد" / "Nouveau"
+  ]
+};
+(function(){const R=document.getElementById("ij"),L=DATA.labels;R.dir=DATA.dir;const T=new Date(DATA.today);
+const cities=[...new Set(DATA.jobs.map(j=>j.city))];
+const left=d=>{if(!d)return L.nodate;return Math.max(0,Math.round((new Date(d)-T)/864e5))+" "+L.left};
+const col=s=>s>=85?["var(--ij-ok-bg)","var(--ij-ok)"]:s>=75?["var(--ij-mid-bg)","var(--ij-blue)"]:["var(--ij-warn-bg)","var(--ij-warn)"];
+const esc=s=>String(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const ask=p=>{try{if(typeof sendPrompt==="function"){sendPrompt(p);return}}catch(e){}navigator.clipboard&&navigator.clipboard.writeText(p)};
+R.innerHTML=`<div class="m"><div class="mc"><p class="l">${L.checked}</p><p class="v">${DATA.stats.checked}</p></div><div class="mc"><p class="l">${L.shown}</p><p class="v">${DATA.stats.shown}</p></div><div class="mc"><p class="l">${L.best}</p><p class="v">${DATA.stats.best}%</p></div></div><div class="chips"><button class="chip on" data-f="">${L.all}</button>${cities.map(c=>`<button class="chip" data-f="${esc(c)}">${esc(c)}</button>`).join("")}</div><div id="ijl"></div><div class="links">${DATA.links.map(l=>`<a class="lk" href="${esc(l.url)}" target="_blank" rel="noopener"><span class="ic">${esc(l.icon||"✨")}</span><span><b>${esc(l.title)}</b>${esc(l.text)}</span><span class="ar">→</span>${l.badge?`<span class="nw">${esc(l.badge)}</span>`:""}</a>`).join("")}</div><div class="brand">ijob.ma</div>`;
+function card(j,i){const[b,t]=col(j.score);const k=`${j.title} — ${j.employer} (${j.city})`;return `<div class="card${i===0?" top":""}"><div class="hd"><div class="sc" style="background:${b};color:${t}">${j.score}%</div><div style="flex:1;min-width:0"><p class="tt">${esc(j.title)}</p><p class="em">${esc(j.employer)}${j.source?" · "+esc(j.source):""}</p></div></div><div class="tags"><span class="tag">📍 ${esc(j.city)}</span>${j.contract?`<span class="tag">📄 ${esc(j.contract)}</span>`:""}<span class="tag">⏳ ${left(j.deadline)}</span>${j.scam?`<span class="tag warn">⚠️</span>`:""}</div><div class="bar"><span style="width:${j.score}%"></span></div><p class="why">✅ ${esc(j.why)}</p>${j.gap?`<p class="gap">⚠️ ${esc(j.gap)}</p>`:""}<div class="acts"><a class="btn pri" href="${esc(j.url)}" target="_blank" rel="noopener">${L.view} ↗</a><button class="btn" data-p="${esc(L.letter+": "+k)}">${L.letter}</button><button class="btn" data-p="${esc(L.cv+": "+k)}">${L.cv}</button></div></div>`}
+function render(f){const js=DATA.jobs.filter(j=>!f||j.city===f);const pr=js.filter(j=>j.sector!=="public"),pu=js.filter(j=>j.sector==="public");let h=pr.map(card).join("");if(pu.length)h+=`<p class="sec">${L.publicSec}</p>`+pu.map((j,i)=>card(j,i+99)).join("");const el=document.getElementById("ijl");el.innerHTML=h;el.querySelectorAll("button[data-p]").forEach(x=>x.onclick=()=>ask(x.dataset.p))}
+R.querySelectorAll(".chip").forEach(c=>c.onclick=()=>{R.querySelectorAll(".chip").forEach(z=>z.classList.remove("on"));c.classList.add("on");render(c.dataset.f)});
+render("")})();
+</script>

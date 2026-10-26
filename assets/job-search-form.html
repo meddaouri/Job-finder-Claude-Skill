@@ -1,0 +1,47 @@
+<!-- iJob job-search intake (when there is no CV). Fill L in the user's language and PREFILL with anything already known. Render inline or as an artifact. -->
+<style>
+:root{--ij-blue:#0B5FD6;--ij-dark:#1F242B;--ij-bg:#fff;--ij-soft:#F2F5F9;--ij-line:#DCE2EA;--ij-muted:#5A6370;--ij-err:#C92A2A}
+@media (prefers-color-scheme:dark){:root{--ij-dark:#ECEFF3;--ij-bg:#1B1F25;--ij-soft:#242A31;--ij-line:#333A43;--ij-muted:#A3ACB8;--ij-err:#FF8787}}
+.jf{font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;color:var(--ij-dark);font-size:14px;max-width:720px;margin:0 auto;padding:12px 0}
+.jf .q{background:var(--ij-bg);border:1px solid var(--ij-line);border-radius:14px;padding:12px 14px;margin-bottom:10px;transition:border-color .2s}
+.jf .q.ok{border-color:var(--ij-blue)}
+.jf .qt{font-weight:600;margin:0 0 8px;display:flex;gap:8px;align-items:center}
+.jf .qt span{font-size:18px}
+.jf .chips{display:flex;gap:6px;flex-wrap:wrap}
+.jf .chip{font:inherit;font-size:13px;padding:6px 12px;border-radius:999px;border:1px solid var(--ij-line);background:transparent;color:var(--ij-dark);cursor:pointer;transition:all .15s}
+.jf .chip:hover{border-color:var(--ij-blue)}
+.jf .chip.on{background:var(--ij-blue);border-color:var(--ij-blue);color:#fff;transform:scale(1.04)}
+.jf input{font:inherit;width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid var(--ij-line);border-radius:10px;background:var(--ij-bg);color:var(--ij-dark);margin-top:8px}
+.jf .tip{background:var(--ij-soft);border-radius:12px;padding:10px 12px;font-size:13px;color:var(--ij-muted);margin-bottom:10px}
+.jf .err{font-size:13px;color:var(--ij-err);margin:6px 0 0}
+.jf .go{font:inherit;font-size:16px;font-weight:700;width:100%;padding:14px;border:0;border-radius:14px;color:#fff;cursor:pointer;position:relative;overflow:hidden;animation:jfHue 4s ease-in-out infinite}
+.jf .go::after{content:"";position:absolute;top:0;bottom:0;width:35%;left:-50%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);animation:jfShine 2.6s infinite}
+@keyframes jfHue{0%,100%{background:#0B5FD6}50%{background:#0A8F6A}}
+@keyframes jfShine{0%{left:-50%}60%,100%{left:130%}}
+@media (prefers-reduced-motion:reduce){.jf .go,.jf .go::after{animation:none}.jf .chip.on{transform:none}}
+</style>
+<div class="jf" id="jf"></div>
+<script>
+const L={dir:"rtl",tip:"📎 عندك CV؟ رفعو هنا فالشات وأنا نقرا كلشي بوحدي. ولا جاوب بالضغط على الأزرار 👇",
+ qs:[
+  {k:"what",icon:"🔎",t:"شنو كتقلب عليه؟",multi:true,o:["خدمة فالقطاع الخاص","مباريات الوظيفة العمومية","سطاج","منحة دراسية"]},
+  {k:"field",icon:"💼",t:"فأي مجال؟",multi:true,free:"ولا كتب المجال ديالك…",o:["محاسبة","تجارة ومبيعات","كول سنتر","إعلاميات","صحة وتمريض","كهرباء وميكانيك","فندقة وطبخ","نقل وسياقة","تعليم","إدارة وسكريتارية"]},
+  {k:"dip",icon:"🎓",t:"الشهادة ديالك؟",o:["بلا شهادة","باك","OFPPT تقني","OFPPT تقني متخصص","باك+2","إجازة","ماستر","مهندس"]},
+  {k:"exp",icon:"⏱️",t:"شحال عندك ديال الخبرة؟",o:["بلا خبرة","أقل من عام","1–3 سنين","3–5 سنين","+5 سنين"]},
+  {k:"city",icon:"📍",t:"فين باغي تخدم؟",multi:true,free:"مدينة أخرى…",o:["الدار البيضاء","الرباط","طنجة","مراكش","فاس","أكادير","الجديدة","القنيطرة","مكناس","وجدة","أي مدينة","عن بعد"]},
+  {k:"langs",icon:"🗣️",t:"اللغات اللي كتهضر مزيان؟",multi:true,o:["العربية","الفرنسية","الإنجليزية","الإسبانية","الأمازيغية"]},
+  {k:"contract",icon:"📄",t:"نوع العقد؟",multi:true,o:["CDI","CDD","Anapec","Intérim","Freelance","أي حاجة"]}
+ ],
+ req:["what","field","city"],err:"جاوب على: ",go:"قلب ليا على الخدمة دابا 🚀",head:"[ijob-search] قلب ليا على عروض بهاد البروفايل:"};
+const PREFILL={}; // e.g. {city:["الجديدة"]}
+(function(){const S=Object.assign({},PREFILL);const R=document.getElementById("jf");R.dir=L.dir;
+const esc=s=>String(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const has=k=>Array.isArray(S[k])?S[k].length>0:!!S[k];
+function draw(){R.innerHTML=`<div class="tip">${L.tip}</div>`+L.qs.map(q=>{const v=S[q.k];const on=o=>q.multi?(v||[]).includes(o):v===o;return `<div class="q${has(q.k)?" ok":""}"><p class="qt"><span>${q.icon}</span>${q.t}</p><div class="chips">${q.o.map(o=>`<button class="chip${on(o)?" on":""}" data-q="${q.k}" data-o="${esc(o)}">${o}</button>`).join("")}</div>${q.free?`<input data-free="${q.k}" placeholder="${esc(q.free)}" value="${esc(S[q.k+"_free"])}">`:""}</div>`}).join("")+`<button class="go" id="go">${L.go}</button><p class="err" id="er"></p>`;
+R.querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>{const q=L.qs.find(x=>x.k===b.dataset.q),o=b.dataset.o;if(q.multi){S[q.k]=S[q.k]||[];const i=S[q.k].indexOf(o);i>-1?S[q.k].splice(i,1):S[q.k].push(o)}else S[q.k]=S[q.k]===o?"":o;draw()});
+R.querySelectorAll("[data-free]").forEach(e=>e.oninput=()=>{S[e.dataset.free+"_free"]=e.value;const k=e.dataset.free;S[k]=S[k]||[];if(e.value&&!S[k].length)S[k]=[];});
+document.getElementById("go").onclick=()=>{const miss=L.req.filter(k=>!has(k)&&!S[k+"_free"]);if(miss.length){document.getElementById("er").textContent=L.err+miss.map(k=>L.qs.find(q=>q.k===k).t).join(" · ");return}
+const txt=[L.head,...L.qs.map(q=>{let v=S[q.k];v=Array.isArray(v)?v.join(", "):(v||"");if(S[q.k+"_free"])v=[v,S[q.k+"_free"]].filter(Boolean).join(", ");return v?`${q.icon} ${q.t} ${v}`:""}).filter(Boolean)].join("\n");
+try{if(typeof sendPrompt==="function"){sendPrompt(txt);return}}catch(e){}navigator.clipboard&&navigator.clipboard.writeText(txt);document.getElementById("er").textContent="✓ Copied — paste it in the chat"}}
+draw()})();
+</script>
